@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Challenges Presentation Sandbox</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC; /* Slate 50 Light Background */
+            color: #1E293B; /* Slate 800 Core Text */
+            overflow-x: hidden;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Fluid transition settings */
+        .step-transition {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        /* Radar Sweep Animation for Light Theme */
+        @keyframes radar-sweep {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .radar-sweeper {
+            animation: radar-sweep 4s linear infinite;
+        }
+        /* Custom Noise overlay for weather anomaly */
+        @keyframes subtle-noise {
+            0% { opacity: 0.1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 0.1; }
+        }
+        .glitch-noise {
+            animation: subtle-noise 0.3s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Academic Header (Matched with UCL slides) -->
+    <header class="border-b border-slate-200 bg-white/95 backdrop-blur px-8 py-4 flex justify-between items-center z-10 shadow-sm">
+        <div class="flex items-center space-x-3">
+            <div class="bg-sky-600 text-white font-bold px-2.5 py-1 rounded text-xs tracking-wider">UCL</div>
+            <span class="text-xs tracking-wider text-slate-500 font-semibold uppercase">School of Management &bull; Group Pitch Presentation</span>
+        </div>
+        <div class="flex items-center space-x-2 text-xs text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+            <span class="inline-block w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
+            <span class="font-medium text-slate-700">Interactive Slide Component</span>
+        </div>
+    </header>
+
+    <!-- Slide Layout Container -->
+    <main class="flex-grow flex items-center justify-center p-6">
+        <div class="w-full max-w-7xl bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-100 overflow-hidden min-h-[580px] flex flex-col justify-between p-8 relative">
+            
+            <!-- Slide Progress indicator on top -->
+            <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                <div class="flex items-center space-x-3">
+                    <span id="slide-num-badge" class="px-3 py-1 bg-sky-50 text-sky-600 font-bold text-xs rounded-full border border-sky-100 uppercase">Slide 1 of 2</span>
+                    <h2 class="text-xs font-bold tracking-widest text-slate-400 uppercase mono">Grand Challenge Exploration</h2>
+                </div>
+                <div class="flex space-x-1.5" id="step-dots">
+                    <span class="w-2.5 h-2.5 rounded-full bg-sky-600 step-transition" id="dot-1"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-200 step-transition" id="dot-2"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-200 step-transition" id="dot-3"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-200 step-transition" id="dot-4"></span>
+                </div>
+            </div>
+
+            <!-- Double Column Dynamic Presenter Zone -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center flex-grow">
+                
+                <!-- Left Side: Interactive Bullet points (Step-by-step unlock) -->
+                <div class="lg:col-span-6 space-y-6">
+                    
+                    <!-- SLIDE 1 TEXT CONTENT -->
+                    <div id="slide1-text-container" class="space-y-6 transition-all duration-500">
+                        <div class="space-y-2">
+                            <span class="text-xs font-bold text-sky-600 uppercase tracking-widest block">Grand Challenge 01</span>
+                            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                                The Vulnerability of <span class="text-sky-600">Future Mobility</span>
+                            </h1>
+                            <p class="text-xs text-slate-400 font-medium tracking-wide italic">Context Axis: Climate Instability vs. Municipal Infrastructure</p>
+                        </div>
+
+                        <!-- Slide 1 Crisis block -->
+                        <div id="s1-crisis" class="step-transition transform translate-y-4 opacity-0 border-l-4 border-sky-500 pl-4 py-1 space-y-1">
+                            <span class="text-[10px] uppercase font-bold text-sky-600 tracking-wider block">The Crisis Frame</span>
+                            <p class="text-sm text-slate-600 leading-relaxed font-medium">
+                                As global regions rapidly transition towards automated public mobility, traditional physical road networks remain highly vulnerable to volatile climate phenomena.
+                            </p>
+                        </div>
+
+                        <!-- Slide 1 Pain point block -->
+                        <div id="s1-pain" class="step-transition transform translate-y-4 opacity-0 border-l-4 border-rose-500 pl-4 py-1 space-y-1">
+                            <span class="text-[10px] uppercase font-bold text-rose-500 tracking-wider block">The Breaking Point</span>
+                            <p class="text-sm text-slate-700 leading-relaxed font-semibold">
+                                Extreme weather anomalies trigger instant vehicle sensor blindings and telemetry decay, threatening to paralyze next-generation urban mobility when cities need resiliency the most.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- SLIDE 2 TEXT CONTENT (Hidden initially) -->
+                    <div id="slide2-text-container" class="space-y-6 transition-all duration-500 hidden opacity-0">
+                        <div class="space-y-2">
+                            <span class="text-xs font-bold text-sky-600 uppercase tracking-widest block">Grand Challenge 02</span>
+                            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                                Structural Trap of the <span class="text-sky-600">Green Transition</span>
+                            </h1>
+                            <p class="text-xs text-slate-400 font-medium tracking-wide italic">Context Axis: Capital Allocation vs. Public Resource Efficiency</p>
+                        </div>
+
+                        <!-- Slide 2 Crisis block -->
+                        <div id="s2-crisis" class="step-transition transform translate-y-4 opacity-0 border-l-4 border-sky-500 pl-4 py-1 space-y-1">
+                            <span class="text-[10px] uppercase font-bold text-sky-600 tracking-wider block">The Structural Crisis</span>
+                            <p class="text-sm text-slate-600 leading-relaxed font-medium">
+                                Current municipal greening strategies suffer from severe budgetary misallocations, resulting in the critical <span class="text-rose-600 underline decoration-dotted font-semibold">"empty-asset syndrome"</span> during off-peak operations.
+                            </p>
+                        </div>
+
+                        <!-- Slide 2 Pain point block -->
+                        <div id="s2-pain" class="step-transition transform translate-y-4 opacity-0 border-l-4 border-rose-500 pl-4 py-1 space-y-1">
+                            <span class="text-[10px] uppercase font-bold text-rose-500 tracking-wider block">The Fiscal Trap</span>
+                            <p class="text-sm text-slate-700 leading-relaxed font-semibold">
+                                Rigid, heavy public subsidies are locked into massive underutilized green bus fleets, sparking low capital efficiency and building an unsustainable cycle that fails strategic ESG investor expectations.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Side: Immersive Visual Sandbox (Switchable Panels) -->
+                <div class="lg:col-span-6 flex justify-center items-center">
+                    
+                    <!-- PANEL 1: Crisp Light Theme Radar (LIDAR Simulation for Slide 1) -->
+                    <div id="panel-radar" class="w-full max-w-[360px] aspect-square rounded-2xl border border-slate-200 bg-slate-50/50 p-6 flex flex-col justify-between relative shadow-sm step-transition">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                            <div class="flex items-center space-x-1.5">
+                                <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
+                                <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mono">L4 Telemetry Feed</span>
+                            </div>
+                            <span id="weather-tag" class="text-[9px] font-bold px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-600 uppercase tracking-wider flex items-center space-x-1">
+                                <i class="fa-solid fa-cloud-sun"></i>
+                                <span>Weather: Clear</span>
+                            </span>
+                        </div>
+
+                        <!-- Circular Scan Display -->
+                        <div class="relative w-full aspect-square max-h-[220px] mx-auto my-4 rounded-full border border-slate-200 flex items-center justify-center bg-white overflow-hidden shadow-inner">
+                            <!-- Conic Radar Beam -->
+                            <div id="radar-beam" class="absolute w-full h-full rounded-full radar-sweeper origin-center pointer-events-none" style="background: conic-gradient(from 0deg at 50% 50%, rgba(14, 165, 233, 0.15) 0deg, transparent 90deg);"></div>
+                            
+                            <!-- Internal Grid lines -->
+                            <div class="absolute w-[75%] h-[75%] rounded-full border border-dashed border-slate-100"></div>
+                            <div class="absolute w-[50%] h-[50%] rounded-full border border-slate-100"></div>
+                            <div class="absolute w-full h-[1px] bg-slate-100"></div>
+                            <div class="absolute h-full w-[1px] bg-slate-100"></div>
+
+                            <!-- Central AV indicator icon -->
+                            <div class="z-10 text-center space-y-1">
+                                <i id="radar-icon" class="fa-solid fa-bus text-4xl text-sky-500 transition-colors duration-500"></i>
+                                <div id="radar-status-label" class="text-[10px] font-extrabold text-sky-600 tracking-wider uppercase mono">System OK</div>
+                            </div>
+
+                            <!-- Weather Overlay (Active on step 2) -->
+                            <div id="radar-anomaly-overlay" class="absolute inset-0 bg-rose-50/75 flex flex-col justify-center items-center backdrop-blur-[0.5px] border border-rose-300 opacity-0 pointer-events-none transition-all duration-500">
+                                <div class="glitch-noise text-rose-600 text-center space-y-1">
+                                    <i class="fa-solid fa-triangle-exclamation text-3xl animate-bounce"></i>
+                                    <div class="text-xs font-extrabold tracking-wider uppercase">LIDAR Signal Degraded</div>
+                                    <span class="text-[9px] font-mono bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded">Telemetry Decay Level: 87%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-2 flex justify-between items-center text-[9px] font-mono text-slate-400">
+                            <span>V2X Hub v4.2</span>
+                            <span>Target: Active Commuter Fleet</span>
+                        </div>
+                    </div>
+
+                    <!-- PANEL 2: Clean Empty-Asset/Subsidy Visualizer (For Slide 2) -->
+                    <div id="panel-subsidy" class="w-full max-w-[360px] aspect-square rounded-2xl border border-slate-200 bg-slate-50/50 p-6 flex flex-col justify-between relative shadow-sm step-transition hidden opacity-0">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                            <div class="flex items-center space-x-1.5">
+                                <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                                <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mono">Fiscal Asset Watch</span>
+                            </div>
+                            <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-rose-50 border border-rose-100 text-rose-600 uppercase tracking-wider">
+                                Resource Trap
+                            </span>
+                        </div>
+
+                        <!-- Mini Bus Fleet Grid -->
+                        <div class="space-y-4 my-auto">
+                            <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm space-y-2">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-slate-400 uppercase">Subsidized Bus Line Occupancy</span>
+                                    <span id="load-label" class="text-slate-700 transition-colors duration-500">Standard Loading</span>
+                                </div>
+                                
+                                <div class="grid grid-cols-4 gap-2">
+                                    <div class="bg-slate-50 border border-slate-100 rounded-lg py-1.5 text-center transition-all duration-500" id="bus-asset-1">
+                                        <i class="fa-solid fa-bus text-sky-500"></i>
+                                        <span class="block text-[8px] font-mono mt-0.5 text-slate-400">Hub 1</span>
+                                    </div>
+                                    <div class="bg-slate-50 border border-slate-100 rounded-lg py-1.5 text-center transition-all duration-500" id="bus-asset-2">
+                                        <i class="fa-solid fa-bus text-sky-500"></i>
+                                        <span class="block text-[8px] font-mono mt-0.5 text-slate-400">Hub 2</span>
+                                    </div>
+                                    <div class="bg-slate-50 border border-slate-100 rounded-lg py-1.5 text-center transition-all duration-500" id="bus-asset-3">
+                                        <i class="fa-solid fa-bus text-sky-500"></i>
+                                        <span class="block text-[8px] font-mono mt-0.5 text-slate-400">Hub 3</span>
+                                    </div>
+                                    <div class="bg-slate-50 border border-slate-100 rounded-lg py-1.5 text-center transition-all duration-500" id="bus-asset-4">
+                                        <i class="fa-solid fa-bus text-sky-500"></i>
+                                        <span class="block text-[8px] font-mono mt-0.5 text-slate-400">Hub 4</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Live Counter Block -->
+                            <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm flex justify-between items-center">
+                                <div>
+                                    <span class="text-[9px] text-slate-400 uppercase font-bold tracking-wider block">Wasted Public Subsidy</span>
+                                    <span id="subsidy-burn-counter" class="text-xl font-bold text-slate-800 tracking-tight mono">$0.00</span>
+                                </div>
+                                <div class="text-right">
+                                    <span id="burn-badge" class="text-[8px] font-bold px-2 py-1 bg-slate-100 text-slate-500 rounded uppercase">Idle Mode</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-2 flex justify-between items-center text-[9px] font-mono text-slate-400">
+                            <span>SaaS Fleet Metrics v1.0</span>
+                            <span>Asset Status: Underutilized</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Clean Slide Controls Block -->
+            <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center">
+                <span class="text-xs text-slate-400 font-mono">Control: Use Keyboard <span class="bg-slate-100 border border-slate-200 px-1 py-0.5 rounded text-[10px] text-slate-600"><i class="fa-solid fa-arrow-left"></i> <i class="fa-solid fa-arrow-right"></i></span> keys to navigate</span>
+                
+                <div class="flex items-center space-x-3">
+                    <button id="btn-prev" onclick="goToPrevStep()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-lg border border-slate-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+                        <i class="fa-solid fa-chevron-left mr-1.5"></i> Previous
+                    </button>
+                    <button id="btn-next" onclick="goToNextStep()" class="px-6 py-2 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white text-xs font-bold rounded-lg shadow-lg shadow-sky-500/15 transition-all transform hover:scale-[1.01] flex items-center space-x-1.5">
+                        <span id="btn-next-text">Next Step</span> <i id="btn-next-icon" class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Academic Footer -->
+    <footer class="bg-white border-t border-slate-200 px-8 py-3 text-xs text-slate-400 flex justify-between items-center shadow-sm z-10">
+        <span>AHST: Autonomous Hub-and-Spoke Transit Framework</span>
+        <span class="mono text-[10px]">Academic Evaluation Platform</span>
+    </footer>
+
+    <!-- Academic Presentation Complete Custom Modal (Replaces native alert) -->
+    <div id="success-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white rounded-2xl border border-slate-200 p-8 max-w-md w-full mx-4 shadow-2xl text-center space-y-5 transform scale-95 transition-all duration-300" id="modal-card">
+            <div class="w-16 h-16 bg-emerald-50 border border-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto text-2xl animate-bounce">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-xl font-bold text-slate-900">Challenges Outlined!</h3>
+                <p class="text-sm text-slate-500 leading-relaxed">
+                    You have successfully demonstrated the dual Grand Challenges. The slide deck is now primed to transition into your project’s innovative Core Technology solution.
+                </p>
+            </div>
+            <div class="pt-2">
+                <button onclick="closeSuccessModal()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-lg transition-colors">
+                    Return to Sandbox
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Core step state tracker (Total 4 presentation steps)
+        // Step 1: Slide 1 - Challenge 1 Crisis Revealed
+        // Step 2: Slide 1 - Challenge 1 Pain Point + Weather Telemetry Decay Revealed
+        // Step 3: Slide 2 - Challenge 2 Crisis Revealed
+        // Step 4: Slide 2 - Challenge 2 Pain Point + Subsidy Burn Rate active
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        // Sound generator utilizing Web Audio API oscillators (No external sound files)
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playChime(frequency, type = 'sine', duration = 0.15) {
+            try {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                gain.gain.setValueAtTime(0.04, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.start();
+                osc.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                // Autoplay block handler
+            }
+        }
+
+        // Slide 2 Subsidy burn dynamic counter variables
+        let subsidyTimer = null;
+        let accruedSubsidyVal = 0.00;
+
+        function startSubsidyBurn() {
+            if (subsidyTimer) clearInterval(subsidyTimer);
+            accruedSubsidyVal = 0.00;
+            const burnLabel = document.getElementById('subsidy-burn-counter');
+            const burnBadge = document.getElementById('burn-badge');
+            
+            burnBadge.className = "text-[8px] font-bold px-2 py-1 bg-rose-100 text-rose-600 rounded uppercase animate-pulse";
+            burnBadge.innerText = "Burning Live";
+
+            subsidyTimer = setInterval(() => {
+                // Random dynamic rate mimicking idle municipal loss ($32 to $55 per second equivalence)
+                accruedSubsidyVal += (Math.random() * 8.5) + 3.2;
+                burnLabel.innerText = `$${accruedSubsidyVal.toFixed(2)}`;
+            }, 250);
+        }
+
+        function stopSubsidyBurn() {
+            if (subsidyTimer) {
+                clearInterval(subsidyTimer);
+                subsidyTimer = null;
+            }
+            document.getElementById('subsidy-burn-counter').innerText = "$0.00";
+            const burnBadge = document.getElementById('burn-badge');
+            burnBadge.className = "text-[8px] font-bold px-2 py-1 bg-slate-100 text-slate-500 rounded uppercase";
+            burnBadge.innerText = "Idle Mode";
+        }
+
+        // Central presentation render matrix
+        function renderStep() {
+            // Update Navigation Button States
+            document.getElementById('btn-prev').disabled = (currentStep === 1);
+            
+            const nextText = document.getElementById('btn-next-text');
+            const nextIcon = document.getElementById('btn-next-icon');
+            
+            if (currentStep === totalSteps) {
+                nextText.innerText = "Complete Presentation";
+                nextIcon.className = "fa-solid fa-flag-checkered";
+            } else {
+                nextText.innerText = "Next Step";
+                nextIcon.className = "fa-solid fa-chevron-right";
+            }
+
+            // Sync slide indicators/dots
+            for (let i = 1; i <= totalSteps; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i === currentStep) {
+                    dot.className = "w-4 h-2.5 rounded-full bg-sky-600 step-transition";
+                } else if (i < currentStep) {
+                    dot.className = "w-2.5 h-2.5 rounded-full bg-sky-200 step-transition";
+                } else {
+                    dot.className = "w-2.5 h-2.5 rounded-full bg-slate-200 step-transition";
+                }
+            }
+
+            // Slide text containers variables
+            const s1Text = document.getElementById('slide1-text-container');
+            const s2Text = document.getElementById('slide2-text-container');
+            const panelRadar = document.getElementById('panel-radar');
+            const panelSubsidy = document.getElementById('panel-subsidy');
+
+            // Slide 1 Crisis and Pain point visual cues
+            const s1Crisis = document.getElementById('s1-crisis');
+            const s1Pain = document.getElementById('s1-pain');
+
+            // Slide 2 Crisis and Pain point visual cues
+            const s2Crisis = document.getElementById('s2-crisis');
+            const s2Pain = document.getElementById('s2-pain');
+
+            const slideBadge = document.getElementById('slide-num-badge');
+
+            // PHASE 1: Slide 1 - Challenge 1 Active (Steps 1 & 2)
+            if (currentStep <= 2) {
+                slideBadge.innerText = "Slide 1 of 2";
+                
+                // Show slide 1 elements, hide slide 2
+                s1Text.classList.remove('hidden');
+                setTimeout(() => s1Text.classList.remove('opacity-0'), 50);
+                
+                s2Text.classList.add('hidden', 'opacity-0');
+                
+                panelRadar.classList.remove('hidden');
+                setTimeout(() => panelRadar.classList.remove('opacity-0'), 50);
+                
+                panelSubsidy.classList.add('hidden', 'opacity-0');
+                stopSubsidyBurn();
+
+                // Step 1: Slide 1 Crisis Active
+                if (currentStep === 1) {
+                    s1Crisis.className = "step-transition transform translate-y-0 opacity-100 border-l-4 border-sky-500 pl-4 py-1 space-y-1";
+                    s1Pain.className = "step-transition transform translate-y-4 opacity-0 border-l-4 border-rose-500 pl-4 py-1 space-y-1";
+                    
+                    // Radar in baseline operational mode
+                    document.getElementById('radar-anomaly-overlay').classList.add('opacity-0');
+                    document.getElementById('radar-anomaly-overlay').classList.add('pointer-events-none');
+                    document.getElementById('radar-icon').className = "fa-solid fa-bus text-4xl text-sky-500 transition-colors duration-500";
+                    document.getElementById('radar-status-label').innerText = "System OK";
+                    document.getElementById('radar-status-label').className = "text-[10px] font-extrabold text-sky-600 tracking-wider uppercase mono";
+                    
+                    const tag = document.getElementById('weather-tag');
+                    tag.className = "text-[9px] font-bold px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-600 uppercase tracking-wider flex items-center space-x-1";
+                    tag.innerHTML = `<i class="fa-solid fa-cloud-sun"></i> <span>Weather: Clear</span>`;
+                }
+
+                // Step 2: Slide 1 Pain Point Active (Triggers Weather Anomaly)
+                if (currentStep === 2) {
+                    s1Crisis.className = "step-transition transform translate-y-0 opacity-100 border-l-4 border-sky-500 pl-4 py-1 space-y-1";
+                    s1Pain.className = "step-transition transform translate-y-0 opacity-100 border-l-4 border-rose-500 pl-4 py-1 space-y-1";
+                    
+                    // Radar switches automatically to Anomaly degradation
+                    document.getElementById('radar-anomaly-overlay').classList.remove('opacity-0');
+                    document.getElementById('radar-anomaly-overlay').classList.remove('pointer-events-none');
+                    document.getElementById('radar-icon').className = "fa-solid fa-triangle-exclamation text-4xl text-rose-500 animate-bounce";
+                    document.getElementById('radar-status-label').innerText = "Signal Loss";
+                    document.getElementById('radar-status-label').className = "text-[10px] font-extrabold text-rose-600 tracking-wider uppercase mono animate-pulse";
+                    
+                    const tag = document.getElementById('weather-tag');
+                    tag.className = "text-[9px] font-bold px-2 py-0.5 rounded bg-rose-50 border border-rose-200 text-rose-600 uppercase tracking-wider flex items-center space-x-1 animate-pulse";
+                    tag.innerHTML = `<i class="fa-solid fa-cloud-showers-heavy text-rose-500"></i> <span>Weather: Blizzard</span>`;
+                }
+            }
+
+            // PHASE 2: Slide 2 - Challenge 2 Active (Steps 3 & 4)
+            if (currentStep >= 3) {
+                slideBadge.innerText = "Slide 2 of 2";
+                
+                // Hide slide 1 elements, show slide 2
+                s1Text.classList.add('hidden', 'opacity-0');
+                
+                s2Text.classList.remove('hidden');
+                setTimeout(() => s2Text.classList.remove('opacity-100'), 50);
+                s2Text.className = "space-y-6 transition-all duration-500 opacity-100";
+
+                panelRadar.classList.add('hidden', 'opacity-0');
+                
+                panelSubsidy.classList.remove('hidden');
+                setTimeout(() => panelSubsidy.classList.remove('opacity-0'), 50);
+                panelSubsidy.className = "w-full max-w-[360px] aspect-square rounded-2xl border border-slate-200 bg-slate-50/50 p-6 flex flex-col justify-between relative shadow-sm step-transition opacity-100";
+
+                // Step 3: Slide 2 Crisis Active
+                if (currentStep === 3) {
+                    s2Crisis.className = "step-transition transform translate-y-0 opacity-100 border-l-4 border-sky-500 pl-4 py-1 space-y-1";
+                    s2Pain.className = "step-transition transform translate-y-4 opacity-0 border-l-4 border-rose-500 pl-4 py-1 space-y-1";
+                    
+                    // Fleet looks baseline, no losses
+                    stopSubsidyBurn();
+                    document.getElementById('load-label').innerText = "Baseline Allocation";
+                    document.getElementById('load-label').className = "text-slate-400 uppercase font-bold";
+                    
+                    for (let x = 1; x <= 4; x++) {
+                        const bus = document.getElementById(`bus-asset-${x}`);
+                        bus.className = "bg-slate-50 border border-slate-100 rounded-lg py-1.5 text-center transition-all duration-500";
+                        bus.querySelector('i').className = "fa-solid fa-bus text-sky-500";
+                        bus.querySelector('span').innerText = `Hub ${x}`;
+                        bus.querySelector('span').className = "block text-[8px] font-mono mt-0.5 text-slate-400";
+                    }
+                }
+
+                // Step 4: Slide 2 Pain Point Active (Triggers Empty-Asset Burn Simulator)
+                if (currentStep === 4) {
+                    s2Crisis.className = "step-transition transform translate-y-0 opacity-100 border-l-4 border-sky-500 pl-4 py-1 space-y-1";
+                    s2Pain.className = "step-transition transform translate-y-0 opacity-100 border-l-4 border-rose-500 pl-4 py-1 space-y-1";
+                    
+                    // Active loss simulator triggers
+                    startSubsidyBurn();
+                    document.getElementById('load-label').innerText = "Empty-Asset Load (90%)";
+                    document.getElementById('load-label').className = "text-rose-500 uppercase font-bold animate-pulse";
+                    
+                    // Modify fleet items visually to show empty run state
+                    for (let x = 1; x <= 4; x++) {
+                        const bus = document.getElementById(`bus-asset-${x}`);
+                        if (x === 1) {
+                            // Only 1 bus has load
+                            bus.className = "bg-sky-50 border border-sky-200 rounded-lg py-1.5 text-center transition-all duration-500";
+                            bus.querySelector('i').className = "fa-solid fa-bus text-sky-500";
+                        } else {
+                            // Others running empty
+                            bus.className = "bg-rose-50 border border-rose-200 rounded-lg py-1.5 text-center transition-all duration-500 animate-pulse";
+                            bus.querySelector('i').className = "fa-solid fa-bus text-rose-500";
+                            bus.querySelector('span').innerText = "EMPTY";
+                            bus.querySelector('span').className = "block text-[8px] font-mono mt-0.5 text-rose-500 font-bold";
+                        }
+                    }
+                }
+            }
+        }
+
+        // Slide Step Trigger Controls
+        function goToNextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                playChime(350 + (currentStep * 50), 'sine', 0.12);
+                renderStep();
+            } else {
+                // When finishing final step, display clean completion modal
+                playChime(650, 'sine', 0.3);
+                showSuccessModal();
+            }
+        }
+
+        function goToPrevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                playChime(350 + (currentStep * 50), 'sine', 0.1);
+                renderStep();
+            }
+        }
+
+        // Custom Modal Controller
+        function showSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            const card = document.getElementById('modal-card');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            card.classList.remove('scale-95');
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            const card = document.getElementById('modal-card');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            card.classList.add('scale-95');
+        }
+
+        // Bind to global arrow keys and spacebars to act like physical PPT clickers
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                event.preventDefault();
+                goToNextStep();
+            } else if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                goToPrevStep();
+            }
+        });
+
+        // Initialize display configuration on window frame load
+        window.onload = function() {
+            renderStep();
+        }
+    </script>
+</body>
+</html>
