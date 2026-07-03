@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCL SOM - Interactive Financial Slide & Simulator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --primary-navy: #1E3A8A;
+            --secondary-blue: #3B82F6;
+            --light-blue: #EFF6FF;
+            --bg-gray: #F8FAFC;
+            --border-color: #E2E8F0;
+            --text-dark: #0F172A;
+            --text-muted: #64748B;
+            --success: #10B981;
+            --loss: #EF4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 1.25rem;
+            color: var(--primary-navy);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .view-switcher {
+            display: flex;
+            background-color: var(--light-blue);
+            padding: 4px;
+            border-radius: 8px;
+            gap: 4px;
+        }
+
+        .view-btn {
+            background: none;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--secondary-blue);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-btn.active {
+            background-color: var(--primary-navy);
+            color: white;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Simulator Sidebar */
+        .sidebar {
+            width: 320px;
+            background-color: white;
+            border-right: 1px solid var(--border-color);
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-section h3 {
+            font-size: 0.95rem;
+            color: var(--primary-navy);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid var(--light-blue);
+            padding-bottom: 5px;
+        }
+
+        .control-group {
+            margin-bottom: 18px;
+        }
+
+        .control-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .control-group label span.val {
+            color: var(--secondary-blue);
+            font-weight: 600;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            accent-color: var(--secondary-blue);
+            cursor: pointer;
+        }
+
+        .kpi-summary-box {
+            background-color: var(--light-blue);
+            border-left: 4px solid var(--secondary-blue);
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85rem;
+        }
+
+        .kpi-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .kpi-row:last-child { margin-bottom: 0; }
+        .kpi-row span.kpi-v { font-weight: 600; color: var(--primary-navy); }
+
+        /* Workspace and Views */
+        .workspace {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .view-content {
+            width: 100%;
+            display: none;
+        }
+
+        .view-content.active {
+            display: block;
+        }
+
+        /* --- VIEW 1: PROFESSIONAL PPT SLIDE --- */
+        .ppt-slide {
+            background-color: white;
+            aspect-ratio: 16 / 10;
+            width: 100%;
+            max-width: 1100px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-image: radial-gradient(circle at 95% 5%, var(--light-blue) 0%, transparent 25%);
+        }
+
+        .slide-header {
+            margin-bottom: 25px;
+            border-left: 5px solid var(--primary-navy);
+            padding-left: 15px;
+        }
+
+        .slide-header h2 {
+            font-size: 2rem;
+            color: var(--primary-navy);
+            font-weight: 700;
+        }
+
+        .slide-header p {
+            color: var(--secondary-blue);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .slide-body {
+            display: flex;
+            gap: 30px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .slide-left {
+            flex: 1.3;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-right {
+            flex: 0.9;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Slide Table Styling */
+        .slide-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        .slide-table th {
+            background-color: var(--primary-navy);
+            color: white;
+            font-weight: 600;
+            padding: 10px 8px;
+            text-align: center;
+        }
+
+        .slide-table td {
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .slide-table tr.section-row td {
+            background-color: #F1F5F9;
+            font-weight: 600;
+            text-align: left;
+            color: var(--primary-navy);
+            padding: 6px 10px;
+        }
+
+        .slide-table tr.highlight-row td {
+            font-weight: 700;
+            background-color: var(--light-blue);
+        }
+
+        .slide-table tr:hover td {
+            background-color: #F8FAFC;
+        }
+
+        /* Argument Block Cards */
+        .arg-card {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--secondary-blue);
+            border-radius: 6px;
+            padding: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+
+        .arg-card.dark-card {
+            background-color: var(--primary-navy);
+            color: white;
+            border-left-color: var(--secondary-blue);
+        }
+
+        .arg-card h4 {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            color: var(--primary-navy);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .arg-card.dark-card h4 {
+            color: white;
+        }
+
+        .arg-card p {
+            font-size: 0.78rem;
+            line-height: 1.4;
+            color: var(--text-muted);
+        }
+
+        .arg-card.dark-card p {
+            color: #E2E8F0;
+        }
+
+        .slide-footer {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* --- VIEW 2: EXCEL SHEET --- */
+        .excel-container {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .excel-ribbon {
+            background-color: #107C41; /* Excel Green */
+            color: white;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .excel-grid {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.85rem;
+        }
+
+        .excel-grid th {
+            background-color: #F3F4F6;
+            color: #6B7280;
+            font-weight: normal;
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            text-align: center;
+        }
+
+        .excel-grid td {
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+        }
+
+        .excel-grid .row-label {
+            background-color: #F3F4F6;
+            color: #6B7280;
+            text-align: center;
+            font-weight: normal;
+            width: 40px;
+        }
+
+        .excel-grid .formula-cell {
+            color: #2563EB;
+            background-color: #F8FAFC;
+        }
+
+        .chart-box {
+            margin-top: 25px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .chart-header {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-navy);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* SVG Trend Line Graph Styling */
+        .svg-chart {
+            width: 100%;
+            height: 200px;
+        }
+
+        .axis-line { stroke: #CBD5E1; stroke-width: 1; }
+        .grid-line { stroke: #F1F5F9; stroke-width: 1; stroke-dasharray: 4; }
+        .path-revenue { stroke: #3B82F6; stroke-width: 3; fill: none; }
+        .path-opex { stroke: #EF4444; stroke-width: 2; fill: none; stroke-dasharray: 4; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">
+            <h1><i class="fa-solid fa-chart-line"></i> Autonomous Mobility Financial Simulator</h1>
+            <p>MSIN0246: Innovation Ecosystems for Grand Challenges — Coursework Support Tool</p>
+        </div>
+        <div class="view-switcher">
+            <button class="view-btn active" onclick="switchView('slide')"><i class="fa-solid fa-play"></i> 🖥️ Professional Slide View</button>
+            <button class="view-btn" onclick="switchView('excel')"><i class="fa-solid fa-table"></i> 📊 Excel Formula Architecture</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Interactive Control Panel (Left Panel) -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <h3><i class="fa-solid fa-tags"></i> Pricing Model (£)</h3>
+                <div class="control-group">
+                    <label>Integration Fee (One-off) <span class="val" id="lbl-fee-int">£5,000</span></label>
+                    <input type="range" id="param-fee-int" min="3000" max="8000" step="500" value="5000" oninput="updateCalculations()">
+                </div>
+                <div class="control-group">
+                    <label>SaaS Service Fee (Annual) <span class="val" id="lbl-fee-saas">£2,000</span></label>
+                    <input type="range" id="param-fee-saas" min="1000" max="4000" step="200" value="2000" oninput="updateCalculations()">
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3><i class="fa-solid fa-bus"></i> Market Scale Timeline</h3>
+                <div class="control-group">
+                    <label>Year 1 Pilot Vol. <span class="val" id="lbl-v1">20 units</span></label>
+                    <input type="range" id="param-v1" min="10" max="40" step="5" value="20" oninput="updateCalculations()">
+                </div>
+                <div class="control-group">
+                    <label>Year 5 Max Vol. <span class="val" id="lbl-v5">800 units</span></label>
+                    <input type="range" id="param-v5" min="500" max="1500" step="50" value="800" oninput="updateCalculations()">
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3><i class="fa-solid fa-wallet"></i> Core Cost Structures</h3>
+                <div class="control-group">
+                    <label>Y1 Base Staff Overheads <span class="val" id="lbl-cost-staff">£250,000</span></label>
+                    <input type="range" id="param-cost-staff" min="150000" max="400000" step="10000" value="250000" oninput="updateCalculations()">
+                </div>
+            </div>
+
+            <div class="kpi-summary-box">
+                <div class="kpi-row">
+                    <span>Break-even Target:</span>
+                    <span class="kpi-v" id="kpi-be" style="color:var(--success);">43 vehicles</span>
+                </div>
+                <div class="kpi-row">
+                    <span>Year 2 Status:</span>
+                    <span class="kpi-v" id="kpi-y2-status" style="color:var(--success);">Profitable</span>
+                </div>
+                <div class="kpi-row">
+                    <span>Year 5 Net Margin:</span>
+                    <span class="kpi-v" id="kpi-y5-margin">80.7%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Central Presentation Area (Right Panel) -->
+        <div class="workspace">
+            
+            <!-- VIEW 1: PPT SLIDE MODE -->
+            <div id="view-slide" class="view-content active">
+                <div class="ppt-slide">
+                    <div class="slide-header">
+                        <h2>Financial Viability & Strategic Value Creation</h2>
+                        <p>5-Year Projections & Path to Long-Term System Sustainability</p>
+                    </div>
+
+                    <div class="slide-body">
+                        <!-- Slide Left Panel: The Main Project Table -->
+                        <div class="slide-left">
+                            <table class="slide-table">
+                                <thead>
+                                    <tr>
+                                        <th>Financial Metrics / Operational Year</th>
+                                        <th>Year 1</th>
+                                        <th>Year 2</th>
+                                        <th>Year 3</th>
+                                        <th>Year 4</th>
+                                        <th>Year 5</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="section-row"><td colspan="6">1. Market Penetration Metrics</td></tr>
+                                    <tr>
+                                        <td style="text-align:left;">Annual Newly Integrated Vehicles (units)</td>
+                                        <td id="s-v-new-1">20</td><td id="s-v-new-2">80</td><td id="s-v-new-3">200</td><td id="s-v-new-4">400</td><td id="s-v-new-5">800</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left; font-weight:600;">Cumulative Active Vehicles on Network</td>
+                                        <td id="s-v-cum-1" style="font-weight:600;">20</td><td id="s-v-cum-2" style="font-weight:600;">100</td><td id="s-v-cum-3" style="font-weight:600;">300</td><td id="s-v-cum-4" style="font-weight:600;">700</td><td id="s-v-cum-5" style="font-weight:600;">1,500</td>
+                                    </tr>
+                                    
+                                    <tr class="section-row"><td colspan="6">2. Revenue Projections (£)</td></tr>
+                                    <tr>
+                                        <td style="text-align:left;">System Development & Integration Fee <i>(One-off)</i></td>
+                                        <td id="s-r-int-1">£100,000</td><td id="s-r-int-2">£400,000</td><td id="s-r-int-3">£1,000,000</td><td id="s-r-int-4">£2,000,000</td><td id="s-r-int-5">£4,000,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">Annual Technical Service Subscription Fee <i>(Recurring)</i></td>
+                                        <td id="s-r-saas-1">£40,000</td><td id="s-r-saas-2">£200,000</td><td id="s-r-saas-3">£600,000</td><td id="s-r-saas-4">£1,400,000</td><td id="s-r-saas-5">£3,000,000</td>
+                                    </tr>
+                                    <tr class="highlight-row">
+                                        <td style="text-align:left;">Total Revenue</td>
+                                        <td id="s-r-tot-1">£140,000</td><td id="s-r-tot-2">£600,000</td><td id="s-r-tot-3">£1,600,000</td><td id="s-r-tot-4">£3,400,000</td><td id="s-r-tot-5">£7,000,000</td>
+                                    </tr>
+
+                                    <tr class="section-row"><td colspan="6">3. Operating Expenses (OpEx) (£)</td></tr>
+                                    <tr class="highlight-row">
+                                        <td style="text-align:left;">Total Operating Expenses (OpEx)</td>
+                                        <td id="s-c-tot-1">£300,000</td><td id="s-c-tot-2">£400,000</td><td id="s-c-tot-3">£600,000</td><td id="s-c-tot-4">£900,000</td><td id="s-c-tot-5">£1,350,000</td>
+                                    </tr>
+
+                                    <tr class="section-row"><td colspan="6">4. Profitability Assessment (£)</td></tr>
+                                    <tr style="background-color: #F8FAFC; font-weight:700;">
+                                        <td style="text-align:left;">Net Operating Income (Loss)</td>
+                                        <td id="s-p-net-1">-£160,000</td><td id="s-p-net-2">+£200,000</td><td id="s-p-net-3">+£1,000,000</td><td id="s-p-net-4">+£2,500,000</td><td id="s-p-net-5">+£5,650,000</td>
+                                    </tr>
+                                    <tr style="font-size:0.75rem; font-style:italic; color:var(--text-muted);">
+                                        <td style="text-align:left;">Financial Sustainability Status</td>
+                                        <td id="s-p-stat-1">R&D & Pilot</td><td id="s-p-stat-2">Break-Even</td><td id="s-p-stat-3">Scale-Up</td><td id="s-p-stat-4">Expansion</td><td id="s-p-stat-5">Highly Sustainable</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Slide Right Panel: Visual Narrative Arguments -->
+                        <div class="slide-right">
+                            <div class="arg-card">
+                                <h4><i class="fa-solid fa-layer-group" style="color:var(--secondary-blue);"></i> High-Margin Hybrid SaaS Model</h4>
+                                <p>A strategic combination of one-off system integration and compounding annual subscriptions. Early-stage risk exposure is strictly capped by deploying an intentionally restrained Year 1 pilot strategy.</p>
+                            </div>
+                            <div class="arg-card dark-card">
+                                <h4><i class="fa-solid fa-bullseye" style="color:#60A5FA;"></i> Rapid Turnaround Point (Year 2)</h4>
+                                <p>Leveraging high operational leverage and minimalist asset deployment, step-by-step overhead dilution triggers a secure break-even milestone early in Year 2, requiring only <span id="s-arg-be" style="font-weight:700; color:#FBBF24;">43 units</span>.</p>
+                            </div>
+                            <div class="arg-card">
+                                <h4><i class="fa-solid fa-handshake" style="color:var(--success);"></i> Multi-Stakeholder Value Delivery</h4>
+                                <p>SaaS subscription compounding provides resilient cash flow. This shields investor capital while saving massive custom technology development and operational budgets for municipal transport agencies.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slide-footer">
+                        <span>UCL School of Management • MSIN0246 Business Plan Projections</span>
+                        <span>*Numerical data in tables are excluded from report word count limits as per brief guidelines.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: EXCEL FORMULA ARCHITECTURE MODE -->
+            <div id="view-excel" class="view-content">
+                <div class="excel-container">
+                    <div class="excel-ribbon">
+                        <i class="fa-regular fa-file-excel fa-lg"></i> MSIN0246_Financial_Model_Logic_Architecture.xlsx
+                    </div>
+                    <table class="excel-grid">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>C</th>
+                                <th>D</th>
+                                <th>E (Formula Logic / Cells Architecture)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="row-label">1</td><td style="font-weight:600;">Revenue Component</td><td style="font-weight:600;">Excel Cell Designation</td><td style="font-weight:600;">Underlying Logic / Macro Rule</td></tr>
+                            <tr><td class="row-label">2</td><td>Integration Revenue</td><td><code>E11 = D11 * C5</code></td><td class="formula-cell">= (Newly Integrated Vehicles This Year) × (Fixed One-off Integration Fee)</td></tr>
+                            <tr><td class="row-label">3</td><td>SaaS Annual Revenue</td><td><code>E12 = D12 * C6</code></td><td class="formula-cell">= (Cumulative Network Vehicles Active) × (Annual Technical Service Fee)</td></tr>
+                            <tr><td class="row-label">4</td><td style="font-weight:600;">Cost & Expense Matrix</td><td></td><td></td></tr>
+                            <tr><td class="row-label">5</td><td>Variable Server OpEx</td><td><code>E15 = D12 * C15</code></td><td class="formula-cell">= (Cumulative Connected Vehicles) × (Marginal Cloud Bandwidth Unit Cost)</td></tr>
+                            <tr><td class="row-label">6</td><td>Fixed Overhead Costs</td><td><code>E16 = Fixed Base</code></td><td class="formula-cell">= Fixed Core Engineering Salaries + Compliance Governance Audits</td></tr>
+                            <tr><td class="row-label">7</td><td style="font-weight:600;">Output Metric</td><td></td><td></td></tr>
+                            <tr><td class="row-label">8</td><td style="font-weight:600; color:var(--primary-navy);">Operating Income</td><td><code>E20 = E13 - E17</code></td><td class="formula-cell; font-weight:600;">= Total Gross Revenues Collected − Total System Combined OpEx</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Live Dynamic Trend Graph -->
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <span><i class="fa-solid fa-chart-area"></i> 5-Year Dynamic Expansion Chart (Revenue vs. OpEx)</span>
+                        <span style="font-size:0.8rem; color:var(--text-muted);"><b style="color:#3B82F6;">— Total Revenue</b> &nbsp;&nbsp; <b style="color:#EF4444;">- - OpEx</b></span>
+                    </div>
+                    <svg class="svg-chart" id="live-svg-chart" viewBox="0 0 800 200">
+                        <!-- X & Y Axes -->
+                        <line x1="50" y1="170" x2="750" y2="170" class="axis-line"></line>
+                        <line x1="50" y1="20" x2="50" y2="170" class="axis-line"></line>
+                        
+                        <!-- Grid lines -->
+                        <line x1="50" y1="120" x2="750" y2="120" class="grid-line"></line>
+                        <line x1="50" y1="70" x2="750" y2="70" class="grid-line"></line>
+                        
+                        <!-- Year Labels -->
+                        <text x="70" y="190" font-size="11" fill="#64748B">Year 1</text>
+                        <text x="235" y="190" font-size="11" fill="#64748B">Year 2</text>
+                        <text x="400" y="190" font-size="11" fill="#64748B">Year 3</text>
+                        <text x="565" y="190" font-size="11" fill="#64748B">Year 4</text>
+                        <text x="730" y="190" font-size="11" fill="#64748B">Year 5</text>
+
+                        <!-- Dynamic Lines will be injected by JavaScript -->
+                        <path id="svg-rev-path" d="" class="path-revenue"></path>
+                        <path id="svg-opex-path" d="" class="path-opex"></path>
+                    </svg>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Core View Switching Logic
+        function switchView(viewType) {
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.view-content').forEach(content => content.classList.remove('active'));
+            
+            if(viewType === 'slide') {
+                document.querySelectorAll('.view-btn')[0].classList.add('active');
+                document.getElementById('view-slide').classList.add('active');
+            } else {
+                document.querySelectorAll('.view-btn')[1].classList.add('active');
+                document.getElementById('view-excel').classList.add('active');
+            }
+            // Trigger chart rendering in case elements shifted size
+            updateCalculations();
+        }
+
+        // Helper to format currency values cleanly
+        function fmtCurr(v) {
+            if (v < 0) return `-£${Math.abs(v).toLocaleString()}`;
+            return `+£${v.toLocaleString()}`;
+        }
+
+        // Dynamic Calculations Engine
+        function updateCalculations() {
+            // Get values from interactive range inputs
+            const pFeeInt = parseInt(document.getElementById('param-fee-int').value);
+            const pFeeSaaS = parseInt(document.getElementById('param-fee-saas').value);
+            const pV1 = parseInt(document.getElementById('param-v1').value);
+            const pV5 = parseInt(document.getElementById('param-v5').value);
+            const pCostStaff = parseInt(document.getElementById('param-cost-staff').value);
+
+            // Update range slider text values dynamically
+            document.getElementById('lbl-fee-int').innerText = `£${pFeeInt.toLocaleString()}`;
+            document.getElementById('lbl-fee-saas').innerText = `£${pFeeSaaS.toLocaleString()}`;
+            document.getElementById('lbl-v1').innerText = `${pV1} units`;
+            document.getElementById('lbl-v5').innerText = `${pV5} units`;
+            document.getElementById('lbl-cost-staff').innerText = `£${pCostStaff.toLocaleString()}`;
+
+            // Build out scalable volume vector trajectories based on limits
+            const vNew = [
+                pV1, 
+                Math.round(pV1 * 4), 
+                Math.round(pV1 * 10), 
+                Math.round(pV5 * 0.5), 
+                pV5
+            ];
+            
+            const vCum = [
+                vNew[0],
+                vNew[0] + vNew[1],
+                vNew[0] + vNew[1] + vNew[2],
+                vNew[0] + vNew[1] + vNew[2] + vNew[3],
+                vNew[0] + vNew[1] + vNew[2] + vNew[3] + vNew[4]
+            ];
+
+            // Dynamic Calculations Loop
+            const rInt = [], rSaaS = [], rTot = [], cTot = [], pNet = [];
+            
+            for(let i=0; i<5; i++) {
+                rInt.push(vNew[i] * pFeeInt);
+                rSaaS.push(vCum[i] * pFeeSaaS);
+                rTot.push(rInt[i] + rSaaS[i]);
+
+                // Multi-layered scaling costs
+                const staffOverhead = pCostStaff * (1 + (i * 0.4)); // Staff grows systematically as firm expands
+                const variableCloud = vCum[i] * 200; // Cloud infrastructure scale cost per connected unit
+                const complianceCost = i === 0 ? 40000 : 20000 + (i * 10000); // Early audit load
+                
+                cTot.push(Math.round(staffOverhead + variableCloud + complianceCost));
+                pNet.push(rTot[i] - cTot[i]);
+            }
+
+            // Push updated outputs back into the PPT Presentation UI Table cells
+            for(let i=0; i<5; i++) {
+                const idx = i + 1;
+                document.getElementById(`s-v-new-${idx}`).innerText = vNew[i].toLocaleString();
+                document.getElementById(`s-v-cum-${idx}`).innerText = vCum[i].toLocaleString();
+                document.getElementById(`s-r-int-${idx}`).innerText = `£${rInt[i].toLocaleString()}`;
+                document.getElementById(`s-r-saas-${idx}`).innerText = `£${rSaaS[i].toLocaleString()}`;
+                document.getElementById(`s-r-tot-${idx}`).innerText = `£${rTot[i].toLocaleString()}`;
+                document.getElementById(`s-c-tot-${idx}`).innerText = `£${cTot[i].toLocaleString()}`;
+                
+                const pCell = document.getElementById(`s-p-net-${idx}`);
+                pCell.innerText = fmtCurr(pNet[i]);
+                pCell.style.color = pNet[i] >= 0 ? 'var(--success)' : 'var(--loss)';
+
+                const statCell = document.getElementById(`s-p-stat-${idx}`);
+                if (pNet[i] < 0) statCell.innerText = "R&D & Pilot";
+                else if (pNet[i] < 500000) statCell.innerText = "Break-Even";
+                else if (pNet[i] < 2000000) statCell.innerText = "Scale-Up";
+                else statCell.innerText = "Highly Sustainable";
+            }
+
+            // Calculate precise mathematical Break-Even Threshold Number of Vehicles
+            const totalFixedY2 = pCostStaff * 1.4 + 20000;
+            const contributionPerUnit = pFeeInt + pFeeSaaS - 200;
+            const breakEvenUnits = Math.ceil(totalFixedY2 / contributionPerUnit);
+            
+            document.getElementById('kpi-be').innerText = `${breakEvenUnits} vehicles`;
+            document.getElementById('s-arg-be').innerText = `${breakEvenUnits} vehicles`;
+            
+            const y2Status = document.getElementById('kpi-y2-status');
+            if(pNet[1] >= 0) {
+                y2Status.innerText = "Profitable";
+                y2Status.style.color = 'var(--success)';
+            } else {
+                y2Status.innerText = "Loss Making";
+                y2Status.style.color = 'var(--loss)';
+            }
+
+            const y5MarginVal = ((pNet[4] / rTot[4]) * 100).toFixed(1);
+            document.getElementById('kpi-y5-margin').innerText = `${y5MarginVal}%`;
+
+            // Redraw Live Chart Graphic Trajectories using SVG Path Mapping
+            const maxVal = Math.max(...rTot, ...cTot) * 1.1;
+            
+            function getX(index) { return 75 + (index * 162.5); }
+            function getY(val) { return 170 - ((val / maxVal) * 140); }
+
+            let dRev = `M ${getX(0)} ${getY(rTot[0])}`;
+            let dOpex = `M ${getX(0)} ${getY(cTot[0])}`;
+
+            for(let i=1; i<5; i++) {
+                dRev += ` L ${getX(i)} ${getY(rTot[i])}`;
+                dOpex += ` L ${getX(i)} ${getY(cTot[i])}`;
+            }
+
+            document.getElementById('svg-rev-path').setAttribute('d', dRev);
+            document.getElementById('svg-opex-path').setAttribute('d', dOpex);
+        }
+
+        // Initialize calculator variables automatically on app launch
+        window.onload = function() {
+            updateCalculations();
+        };
+    </script>
+</body>
+</html>
